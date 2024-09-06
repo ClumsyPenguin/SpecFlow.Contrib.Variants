@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace SpecFlow.Contrib.Variants.Core.MsTestProvider.IntegrationTests
 {

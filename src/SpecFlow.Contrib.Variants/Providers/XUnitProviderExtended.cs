@@ -4,10 +4,10 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using TechTalk.SpecFlow.Generator;
-using TechTalk.SpecFlow.Generator.CodeDom;
-using TechTalk.SpecFlow.Generator.Interfaces;
-using TechTalk.SpecFlow.Generator.UnitTestProvider;
+using Reqnroll.Generator;
+using Reqnroll.Generator.CodeDom;
+using Reqnroll.Generator.Interfaces;
+using Reqnroll.Generator.UnitTestProvider;
 
 namespace SpecFlow.Contrib.Variants.Providers
 {
@@ -209,6 +209,10 @@ namespace SpecFlow.Contrib.Variants.Providers
         }
 
         public void SetTestMethodAsRow(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, string scenarioTitle, string exampleSetName, string variantName, IEnumerable<KeyValuePair<string, string>> arguments)
+        {
+        }
+
+        public void MarkCodeMethodInvokeExpressionAsAwait(CodeMethodInvokeExpression expression)
         {
         }
 

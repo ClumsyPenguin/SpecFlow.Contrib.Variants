@@ -1,4 +1,4 @@
-﻿using TechTalk.SpecFlow;
+﻿using Reqnroll;
 
 namespace SpecFlow.Contrib.Variants.Core.NUnitTestProvider.IntegrationTests
 {

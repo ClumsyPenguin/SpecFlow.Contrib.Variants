@@ -7,15 +7,16 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Configuration;
-using TechTalk.SpecFlow.Generator;
-using TechTalk.SpecFlow.Generator.CodeDom;
-using TechTalk.SpecFlow.Generator.Generation;
-using TechTalk.SpecFlow.Generator.UnitTestConverter;
-using TechTalk.SpecFlow.Generator.UnitTestProvider;
-using TechTalk.SpecFlow.Parser;
-using TechTalk.SpecFlow.Tracing;
+using Reqnroll;
+using Reqnroll.Configuration;
+using Reqnroll.Generator;
+using Reqnroll.Generator.CodeDom;
+using Reqnroll.Generator.Generation;
+using Reqnroll.Generator.UnitTestConverter;
+using Reqnroll.Generator.UnitTestProvider;
+using Reqnroll.Parser;
+using Reqnroll.Tracing;
+using DataTable = Gherkin.Ast.DataTable;
 
 [assembly: InternalsVisibleTo("SpecFlow.Contrib.Variants.UnitTests")]
 namespace SpecFlow.Contrib.Variants.Generator
@@ -25,7 +26,7 @@ namespace SpecFlow.Contrib.Variants.Generator
         private readonly IUnitTestGeneratorProvider _testGeneratorProvider;
         private readonly CodeDomHelper _codeDomHelper;
         private readonly LinePragmaHandler _linePragmaHandler;
-        private readonly SpecFlowConfiguration _specFlowConfiguration;
+        private readonly ReqnrollConfiguration _reqnRollConfiguration;
         private readonly IDecoratorRegistry _decoratorRegistry;
         private int _tableCounter;
 
@@ -38,20 +39,20 @@ namespace SpecFlow.Contrib.Variants.Generator
         public const string CustomGeneratedComment = "Generation customised by SpecFlow.Contrib.Variants v3.9.90-pre.1";
         //NEW CODE END
 
-        public FeatureGeneratorExtended(IUnitTestGeneratorProvider testGeneratorProvider, CodeDomHelper codeDomHelper, SpecFlowConfiguration specFlowConfiguration, IDecoratorRegistry decoratorRegistry, string variantKey)
-            : base(decoratorRegistry, testGeneratorProvider, codeDomHelper, specFlowConfiguration)
+        public FeatureGeneratorExtended(IUnitTestGeneratorProvider testGeneratorProvider, CodeDomHelper codeDomHelper, ReqnrollConfiguration reqnRollConfiguration, IDecoratorRegistry decoratorRegistry, string variantKey)
+            : base(decoratorRegistry, testGeneratorProvider, codeDomHelper, reqnRollConfiguration)
         {
             _testGeneratorProvider = testGeneratorProvider;
             _codeDomHelper = codeDomHelper;
-            _specFlowConfiguration = specFlowConfiguration;
+            _reqnRollConfiguration = reqnRollConfiguration;
             _decoratorRegistry = decoratorRegistry;
-            _linePragmaHandler = new LinePragmaHandler(_specFlowConfiguration, _codeDomHelper);
+            _linePragmaHandler = new LinePragmaHandler(_reqnRollConfiguration, _codeDomHelper);
             _variantHelper = new VariantHelper(variantKey); //NEW CODE
         }
 
-        public CodeNamespace GenerateUnitTestFixture(SpecFlowDocument document, string testClassName, string targetNamespace)
+        public CodeNamespace GenerateUnitTestFixture(ReqnrollDocument document, string testClassName, string targetNamespace)
         {
-            var specFlowFeature = document.SpecFlowFeature;
+            var specFlowFeature = document.ReqnrollFeature;
             testClassName = testClassName ?? $"{specFlowFeature.Name.ToIdentifier()}Feature";
             CreateNamespace(targetNamespace);
             CreateTestClassStructure(testClassName, document);
@@ -469,7 +470,7 @@ namespace SpecFlow.Contrib.Variants.Generator
 
         private void GenerateStep(CodeMemberMethod testMethod, Step gherkinStep, ParameterSubstitution paramToIdentifier)
         {
-            var specFlowStep = gherkinStep.AsSpecFlowStep();
+            var specFlowStep = gherkinStep.AsReqnRollStep();
             var codeExpressionList = new List<CodeExpression> { paramToIdentifier.GetSubstitutedString(specFlowStep.Text) };
             //if (specFlowStep.Argument != null)
             //    _codeDomHelper.AddLineDirectiveHidden(testMethod.Statements, _specFlowConfiguration);

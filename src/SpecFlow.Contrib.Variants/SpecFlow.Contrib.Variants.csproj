@@ -22,9 +22,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SpecFlow" Version="3.9.74" />
-    <PackageReference Include="SpecFlow.CustomPlugin" Version="3.9.74" PrivateAssets="All" />
-    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.74" />
+    <PackageReference Include="Reqnroll" Version="2.1.0" />
+    <PackageReference Include="Reqnroll.CustomPlugin" Version="2.1.0" PrivateAssets="All" />
+    <PackageReference Include="Reqnroll.Tools.MsBuild.Generation" Version="2.1.0" />
   </ItemGroup>
 
   <Target Name="CopyFile" AfterTargets="Build">

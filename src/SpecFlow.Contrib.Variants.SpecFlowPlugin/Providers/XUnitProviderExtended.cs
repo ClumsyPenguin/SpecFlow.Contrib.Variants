@@ -3,9 +3,10 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using TechTalk.SpecFlow.Generator;
-using TechTalk.SpecFlow.Generator.UnitTestProvider;
-using TechTalk.SpecFlow.Utils;
+using Reqnroll.Generator;
+using Reqnroll.Generator.CodeDom;
+using Reqnroll.Generator.UnitTestProvider;
+using Reqnroll.Utils;
 
 namespace SpecFlow.Contrib.Variants.SpecFlowPlugin.Providers
 {
@@ -26,6 +27,10 @@ namespace SpecFlow.Contrib.Variants.SpecFlowPlugin.Providers
             return UnitTestGeneratorTraits.ParallelExecution;
         }
 
+        public void SetTestClassNonParallelizable(TestClassGenerationContext generationContext)
+        {
+        }
+
         public void SetTestClassInitializeMethod(TestClassGenerationContext generationContext)
         {
             generationContext.TestClassInitializeMethod.Attributes |= MemberAttributes.Static;
@@ -34,7 +39,7 @@ namespace SpecFlow.Contrib.Variants.SpecFlowPlugin.Providers
             generationContext.TestClass.Members.Add(_currentFixtureDataTypeDeclaration);
             var nestedTypeReference = _codeDomHelper.CreateNestedTypeReference(generationContext.TestClass, _currentFixtureDataTypeDeclaration.Name);
             var fixtureInterface = CreateFixtureInterface(generationContext, nestedTypeReference);
-            _codeDomHelper.SetTypeReferenceAsInterface(fixtureInterface);
+            //_codeDomHelper.SetTypeReferenceAsInterface(fixtureInterface);
             generationContext.TestClass.BaseTypes.Add(fixtureInterface);
             var codeConstructor = new CodeConstructor { Attributes = MemberAttributes.Public };
             _currentFixtureDataTypeDeclaration.Members.Add(codeConstructor);
@@ -190,6 +195,10 @@ namespace SpecFlow.Contrib.Variants.SpecFlowPlugin.Providers
         }
 
         public void SetTestMethodAsRow(TestClassGenerationContext generationContext, CodeMemberMethod testMethod, string scenarioTitle, string exampleSetName, string variantName, IEnumerable<KeyValuePair<string, string>> arguments)
+        {
+        }
+
+        public void MarkCodeMethodInvokeExpressionAsAwait(CodeMethodInvokeExpression expression)
         {
         }
 

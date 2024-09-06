@@ -2,13 +2,15 @@
 using SpecFlow.Contrib.Variants.SpecFlowPlugin.Generator;
 using SpecFlow.Contrib.Variants.SpecFlowPlugin.Providers;
 using System.Linq;
-using TechTalk.SpecFlow.Configuration;
-using TechTalk.SpecFlow.Generator.Interfaces;
-using TechTalk.SpecFlow.Generator.Plugins;
-using TechTalk.SpecFlow.Generator.UnitTestConverter;
-using TechTalk.SpecFlow.Generator.UnitTestProvider;
-using TechTalk.SpecFlow.Infrastructure;
-using TechTalk.SpecFlow.Utils;
+using Reqnroll.Configuration;
+using Reqnroll.Generator.CodeDom;
+using Reqnroll.Generator.Interfaces;
+using Reqnroll.Generator.Plugins;
+using Reqnroll.Generator.UnitTestConverter;
+using Reqnroll.Generator.UnitTestProvider;
+using Reqnroll.Infrastructure;
+using Reqnroll.UnitTestProvider;
+using Reqnroll.Utils;
 
 [assembly: GeneratorPlugin(typeof(VariantsPlugin))]
 
@@ -32,12 +34,12 @@ namespace SpecFlow.Contrib.Variants.SpecFlowPlugin
             var decoratorRegistry = objectContainer.Resolve<DecoratorRegistry>();
 
             // Resolve specflow configuration to confirm custom variant key, use default if none provided
-            var specflowConfiguration = objectContainer.Resolve<SpecFlowConfiguration>();
-            var configParam = specflowConfiguration.Plugins.FirstOrDefault(a => a.Name == GetType().Namespace.Replace(".SpecFlowPlugin", string.Empty))?.Parameters;
+            var specflowConfiguration = objectContainer.Resolve<ReqnrollConfiguration>();
+            var configParam = "Tenant"; //TODO fetch from config
             _variantKey = !string.IsNullOrEmpty(configParam) ? configParam : _variantKey;
 
             // Create custom unit test provider based on user defined config value
-            var generatorProvider = GetGeneratorProviderFromConfig(codeDomHelper, specflowConfiguration.UnitTestProvider);
+            var generatorProvider = new XUnitProviderExtended(codeDomHelper, _variantKey);
 
             // Create generator instance to be registered and replace original
             var customFeatureGenerator = new FeatureGeneratorExtended(generatorProvider, codeDomHelper, specflowConfiguration, decoratorRegistry, _variantKey);
@@ -48,20 +50,12 @@ namespace SpecFlow.Contrib.Variants.SpecFlowPlugin
             objectContainer.RegisterInstanceAs(customFeatureGenerator);
             objectContainer.RegisterInstanceAs<IFeatureGeneratorProvider>(customFeatureGeneratorProvider, "default");
         }
+        
 
-        private IUnitTestGeneratorProvider GetGeneratorProviderFromConfig(CodeDomHelper codeDomHelper, string config)
+        public void Initialize(GeneratorPluginEvents generatorPluginEvents, GeneratorPluginParameters generatorPluginParameters,
+            UnitTestProviderConfiguration unitTestProviderConfiguration)
         {
-            switch (config)
-            {
-                case "mstest":
-                    return new MsTestProviderExtended(codeDomHelper, _variantKey);
-                case "nunit":
-                    return new NUnitProviderExtended(codeDomHelper, _variantKey);
-                case "xunit":
-                    return new XUnitProviderExtended(codeDomHelper, _variantKey);
-                default:
-                    return new MsTestProviderExtended(codeDomHelper, _variantKey);
-            }
+            throw new System.NotImplementedException();
         }
     }
 }
